@@ -6,21 +6,6 @@ const fetchData = async searchTerm => {
         }
     })
 }
-
-
-const debounce = (func) => {
-    let timeOutId;
-    return (...args) => {
-        if (timeOutId) {
-            clearTimeout(timeOutId);
-        }
-        timeOutId = setTimeout(() => {
-            func.apply(null, args);
-        }, 1000)
-    }
-
-}
-
 const onInput = debounce(event => {
     fetchData(event.target.value);
 })

@@ -43,6 +43,11 @@ const onInput = debounce(async event => {
             ${movie.Title}
         `;
         resultsWrapper.appendChild(option);
+        option.addEventListener('click', () => {
+            dropdown.classList.remove('is-active');
+            input.value = movie.Title;
+            getMoreInfo(movie);
+        })
     }
 }, 500)
 input.addEventListener('input', onInput)
@@ -53,3 +58,54 @@ document.addEventListener('click', (e) => {
         dropdown.classList.remove('is-active')
     }
 })
+
+const getMoreInfo = async movie => {
+    const response = await axios.get('http://www.omdbapi.com/', {
+        params: {
+            apikey: '94c19ac7',
+            i: movie.imdbID
+        }
+    })
+    console.log(response.data);
+    document.querySelector('#summary').innerHTML = movieTemplate(response.data);
+}
+
+
+const movieTemplate = movieDetails => {
+    return `
+        <article class="media"> 
+            <figure class="media-left">
+            <p class="image">
+            <img src="${movieDetails.Poster}" alt="">
+</p>
+</figure>
+            <div class="media-content">
+            <div class="content">
+            <h1>${movieDetails.Title}</h1>
+            <h4>${movieDetails.Genre}</h4>
+            <p>${movieDetails.Plot}</p>
+            </div>
+            </div>
+        </article>
+        <article class="notification is-primary">
+        <p class="title">${movieDetails.Awards}</p>
+        <p class="subtitle">Awards</p>
+</article>
+<article class="notification is-primary">
+        <p class="title">${movieDetails.BoxOffice}</p>
+        <p class="subtitle">Box Office</p>
+</article>
+<article class="notification is-primary">
+        <p class="title">${movieDetails.Metascore}</p>
+        <p class="subtitle">Metascore</p>
+</article>
+<article class="notification is-primary">
+        <p class="title">${movieDetails.imdbRating}</p>
+        <p class="subtitle">imdbRating</p>
+</article>
+<article class="notification is-primary">
+        <p class="title">${movieDetails.imdbVotes}</p>
+        <p class="subtitle">imdbVotes</p>
+</article>
+    `
+}
